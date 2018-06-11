@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Multiplication.h">
+    <ClInclude Include="result_function.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
