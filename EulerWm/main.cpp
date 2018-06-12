@@ -5,13 +5,11 @@
 using namespace std;
 int main() {
 	auto start = chrono::steady_clock::now();
-	ofstream result("foo.txt");
-	double dt = 0.001;
-	int time = 1;
 	size_t n_x_steps = 100;
 	size_t n_t_steps = 1000;
-	double dx = 0.01;
-	//define A
+	double dx = 1/n_x_steps;
+	double dt = 1/n_t_steps;
+//define A
 	double** A = new double*[3];
 	for (size_t i = 0; i < 3; ++i) A[i] = new double[n_x_steps];
 	A[1][0] = 1 - dt / (dx * dx);
@@ -19,7 +17,7 @@ int main() {
 	for (size_t j = 1; j < n_x_steps - 1; ++j) {
 		A[1][j] = 1 - 2 * dt / (dx * dx);
 		A[2][j] = dt / (dx * dx);
-		A[0][j-1] = dt / (dx * dx);
+		A[0][j] = dt / (dx * dx);
 	};
 	A[1][n_x_steps-1] =1 + (-2 + (2 - dx) / (2 + dx)) * dt / (dx * dx);
 //define g(t)	
@@ -28,18 +26,18 @@ int main() {
 	for (size_t i = 0; i < n_x_steps; ++i) { 
 		g_start[i] = 0; 
 		g[i] = 0;
-	}
+	} 
 	for (size_t i = 7. / 30 * n_x_steps; i < 13. / 30 * n_x_steps; ++i) {
 		g_start[i] = 0.1;
 		g[i] = 0.1;		
 	}
-	for (size_t i = 0; i < n_t_steps * time; ++i) g = result_function(A, g, n_x_steps, dx);
-	for (size_t i = 0; i < n_x_steps; ++i) { result << g[i]; }
+	for (size_t i = 0; i < size_t(n_t_steps); ++i) g = result_function(A, g, n_x_steps, dx);
+	ofstream result("foo.txt");
+	for (size_t i = 0; i < n_x_steps; ++i) result << g[i] << endl; 
+	for (size_t i = 0; i < 3; ++i)delete[] A[i];
+	delete[] A, g, g_start;
 	auto end = chrono::steady_clock::now();
 	auto elapsed_time = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-	for (size_t i = 0; i < 3; ++i)delete[] A[i];
-	delete[] A;
-	cout << elapsed_time << " milliseconds" << endl;
-	cin >> dx;
-	
+	std::cout << elapsed_time << " milliseconds" << endl;
+	std::cin >> dx;
 }
